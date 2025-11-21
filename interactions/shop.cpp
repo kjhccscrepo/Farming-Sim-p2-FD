@@ -3,7 +3,9 @@
 //
 
 #include "shop.hpp"
+#include "../interactions/item.hpp"
 #include <iostream>
+#include "../logic/ansi_clear.hpp"
 
 int Shop::has(seeds *seed_ptr) {
     if (seed_ptr == nullptr) {
@@ -91,7 +93,7 @@ std::string Shop::buy_options() const {
         buy_opt << "\n";
     }
     if (waterCan() != 0) {
-        buy_opt << (i + 2) << ") ";
+        buy_opt << (i + 1) << ") ";
         buy_opt << "Better Watering Can:\t $";
         buy_opt << waterCan();
         buy_opt << "\n";
@@ -113,7 +115,10 @@ std::string Shop::goodbye() {
 
 void Shop::gotoShop() {
     bool atShop = true;
+    std::cin.clear();
+    std::cin.ignore();
     std::string userInput;
+    ansi_clear();
     std::cout << welcome() << std::endl;
     while (atShop) {
         while (true) {
@@ -140,7 +145,7 @@ void Shop::gotoShop() {
                         break;
                     }
                     if (waterCan() != 0) {
-                        if (std::stoi(userInput) == allSeeds.size()) {
+                        if (std::stoi(userInput) == allSeeds.size() + 1) {
                             if (waterCan() <= inventory_ptr->getMoney()) {
                                 std::cout << "Brought a better watering can for $";
                                 std::cout << waterCan() << ".\n";
@@ -151,7 +156,7 @@ void Shop::gotoShop() {
                             break;
                         }
                     }
-                    if (const int temp = std::stoi(userInput); temp >= 1 && temp < allSeeds.size()) {
+                    if (const int temp = std::stoi(userInput); temp >= 1 && temp <= allSeeds.size()) {
                         choice = temp - 1;
                         purchase_seed = true;
                         break;
@@ -181,6 +186,7 @@ void Shop::gotoShop() {
             }
         }
         if (userInput == "2") {
+            inventory_ptr->sort_me();
             int choice = -1;
             while (true) {
                 std::cout << sell_options() << std::endl;
@@ -191,7 +197,7 @@ void Shop::gotoShop() {
                         break;
                     }
                     if (const int temp = std::stoi(userInput);
-                        temp >= 1 && temp < inventory_ptr->how_many_types_of_things()) {
+                        temp >= 1 && temp <= inventory_ptr->how_many_types_of_things()) {
                         choice = temp - 1;
                         break;
                     }
@@ -199,6 +205,9 @@ void Shop::gotoShop() {
                 std::cout << "Invalid option, enter a valid input!\n";
             }
             while (true) {
+                if (userInput == "r") {
+                    break;
+                }
                 std::cout << "How many " + inventory_ptr->getNameOfItemX(choice) + " do you want to sell?\n";
                 std::cout << "(You have, " + std::to_string(inventory_ptr->getAmountOfItemX(choice)) + ")";
                 std::cout << "\nAmount:\t ";

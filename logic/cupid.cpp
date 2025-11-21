@@ -15,17 +15,17 @@
 
 void cupid::unlock_seeds() {
     if (!seeds_unlocked[0]) {
-        if (farm.getDays() > 13) {
+        if (farm.getDays() > 3) {
             seeds_unlocked[0] = true;
             shop.new_seed(seed_unlockables[0]);
         }
     } else if (!seeds_unlocked[1]) {
-        if (farm.getDays() > 13) {
+        if (farm.getDays() > 7) {
             seeds_unlocked[1] = true;
             shop.new_seed(seed_unlockables[1]);
         }
     } else if (!seeds_unlocked[2]) {
-        if (farm.getDays() > 30) {
+        if (farm.getDays() > 15) {
             seeds_unlocked[2] = true;
             shop.new_seed(seed_unlockables[2]);
         }
@@ -42,6 +42,7 @@ void cupid::try_plant() {
 }
 
 void cupid::seed_change(GamePrinter *printer, std::string &input) {
+    playerInventory.sort_me();
     in_menus = true;
     printer->generate_inventory();
     while (in_menus) {
@@ -67,6 +68,7 @@ void cupid::seed_change(GamePrinter *printer, std::string &input) {
 }
 
 void cupid::inventory_peek(GamePrinter *printer, std::string &input) {
+    playerInventory.sort_me();
     in_menus = true;
     printer->generate_inventory();
     while (in_menus) {

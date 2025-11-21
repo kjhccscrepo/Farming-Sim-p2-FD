@@ -3,7 +3,7 @@
 //
 
 #include "inventory.hpp"
-
+#include "item.hpp"
 #include <algorithm>
 #include <iostream>
 
@@ -12,6 +12,17 @@ inventory::inventory() {
     max_water = 5;
     current_water = max_water;
 }
+
+
+void inventory::sort_me() {
+    if (is_first_item_plantable()) {
+        std::ranges::sort(myInventory.begin() + 1, myInventory.end());
+    } else {
+        std::ranges::sort(myInventory.begin(), myInventory.end());
+    }
+
+}
+
 
 int inventory::has(item *item_ptr) {
     if (item_ptr == nullptr) {
@@ -88,13 +99,14 @@ std::stringstream inventory::inventory_stream() const {
 std::string inventory::sell_stream() const {
     std::stringstream sellStream;
     for (int i = 0; i < myInventory.size(); i++) {
+        sellStream << (i + 1) << ") ";
         sellStream << "x";
         sellStream << myInventory[i]->quantity();
         sellStream << "\t";
         sellStream << myInventory[i]->getMyName();
         sellStream << ", at $";
         sellStream << myInventory[i]->getCost();
-        sellStream << "./n";
+        sellStream << ".\n";
     }
     return sellStream.str();
 }
@@ -162,27 +174,35 @@ int inventory::getMoney() const {
 std::string inventory::buy_attempt(item *item_ptr, const int &amount = 1) {
     int total_price = item_ptr->getCost();
     total_price *= amount;
-    if (total_price > myMoney) {
-        return "You don't have enough money!\n";
+    if (total_price != 0) {
+        if (total_price > myMoney) {
+            return "You don't have enough money!\n";
+        }
+        myMoney -= total_price;
+        add_item_X_times(item_ptr, amount);
+        return ("Brought x" + std::to_string(amount) + " " + item_ptr->getMyName() + ", for $" + std::to_string(total_price)
+                + ".\n");
     }
-    myMoney -= total_price;
-    add_item_X_times(item_ptr, amount);
-    return ("Brought x" + std::to_string(amount) + " " + item_ptr->getMyName() + ", for $" + std::to_string(total_price)
-            + ".\n");
+    return "\n";
 }
 
 std::string inventory::sell_attempt(const int &it, const int &amount) {
-    if (it < 0 || it >= myInventory.size()) {
-        return "You cannot sell that";
-    }
-    if (myInventory[it]->quantity() >= amount) {
-        for (int i = 0; i < myInventory.size(); i++) {
-            myInventory[it]->decrease_quantity();
-            myMoney += myInventory[it]->getCost();
+    if (amount > 0) {
+        if (it < 0 || it >= myInventory.size()) {
+            return "You cannot sell that";
         }
-        return "Sold " + std::to_string(amount) + " " + myInventory[it]->getMyName() + "(s)\n";
+        if (myInventory[it]->quantity() >= amount) {
+            int ledger = 0;
+            for (int i = 0; i < amount; i++) {
+                myInventory[it]->decrease_quantity();
+                ledger += myInventory[it]->getCost();
+            }
+            myMoney += ledger;
+            return "Sold " + std::to_string(amount) + " " + myInventory[it]->getMyName() + ", for  $" + std::to_string(ledger) + ".\n";
+        }
+        return "You cannot sell that much!\n";
     }
-    return "You cannot sell that much!\n";
+    return "\n";
 }
 
 std::string inventory::getNameOfItemX(const int &x) const {

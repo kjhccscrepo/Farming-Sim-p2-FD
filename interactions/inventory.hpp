@@ -20,6 +20,8 @@ class inventory {
 public:
     inventory();
 
+    void sort_me();
+
     int has(item *item_ptr);
 
     void add_item(item *item_ptr);

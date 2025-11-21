@@ -1,14 +1,7 @@
-//
-// Created by kistj on 11/18/2025.
-//
-
 #ifndef FARMING_SIMULATOR_V2C_SEEDS_HPP
 #define FARMING_SIMULATOR_V2C_SEEDS_HPP
 
-#include "../../plots/plant.hpp"
 #include "../item.hpp"
-#include "../../plots/plot.hpp"
-
 class seeds final : public item {
 private:
     plant *myPlant;
@@ -37,5 +30,6 @@ public:
 
     void setCost(int &cost) override;
 
+    //char inventory_position() override;
 };
 #endif //FARMING_SIMULATOR_V2C_SEEDS_HPP

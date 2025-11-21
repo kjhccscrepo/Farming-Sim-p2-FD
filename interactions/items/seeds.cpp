@@ -1,6 +1,4 @@
-//
-// Created by kistj on 11/18/2025.
-//
+#include "../item.hpp"
 #include "seeds.hpp"
 #include "../../plots/plant.hpp"
 class item;
@@ -43,6 +41,10 @@ int seeds::getCost() {
 void seeds::setCost(int &cost) {
     myCost = cost;
 }
+
+//char seeds::inventory_position() {
+//    return 'a';
+//}
 
 seeds::~seeds() {
     myPlant = nullptr;

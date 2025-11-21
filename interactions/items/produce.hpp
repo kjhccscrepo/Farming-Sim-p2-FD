@@ -1,7 +1,6 @@
 #ifndef FARMING_SIMULATOR_V2C_PRODUCE_HPP
 #define FARMING_SIMULATOR_V2C_PRODUCE_HPP
 
-#include "../../plots/plant.hpp"
 #include "../item.hpp"
 class produce final : public item {
 private:
@@ -30,6 +29,8 @@ public:
     int getCost() override;
 
     void setCost(int &cost) override;
+
+    //char inventory_position() override;
 };
 
 #endif
